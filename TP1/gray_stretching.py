@@ -15,11 +15,12 @@ from histogram import Histogram
 if __name__ == '__main__':
     
     if sys.argv.count("-h") != 0 or len(sys.argv) < 2:
-        print("Usage : python3 "+ sys.argv[0] +" fichier.png [-s] [-H] [-l]")
+        print("Usage : python3 "+ sys.argv[0] +" fichier.png [-s] [-H] [-l] [-S cur_min cur_max]")
         print("With  :\n" + 
           "        -s : draw stretched image \n" +
-          "        -H : draw histograms"+
-          "        -l : draw histograms set axis between 0 and 255")
+          "        -H : draw histograms\n"+
+          "        -l : draw histograms set axis between 0 and 255 \n"+
+          "        -S xmin xmax")
         if (len(sys.argv) < 2):
             sys.exit(1)
         else:
@@ -37,6 +38,14 @@ if __name__ == '__main__':
     xminxmaxfixed = False
     if (sys.argv.count("-l") > 0):
         xminxmaxfixed = True
+
+    xmin = -1
+    xmax = -1
+    
+    if sys.argv.count("-S"):
+        i = sys.argv.index("-S")
+        xmin = int(sys.argv[i+1])
+        xmax = int(sys.argv[i+2])
     
     num_fig = 1
     
@@ -63,9 +72,9 @@ if __name__ == '__main__':
     if (strechtImg):
         fig = plt.figure(num_fig)
         num_fig += 1
-        img2 = img.getStretchedImg(fig.gca())
+        img2 = img.getStretchedImg(fig.gca(), 0, 255, xmin, xmax)
         img2.setTitle("Image aprés étalement")
-        img2.reDraw()       
+        img2.reDraw()
         if (draw_histo):
             fig = plt.figure(num_fig)
             num_fig += 1

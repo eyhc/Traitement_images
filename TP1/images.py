@@ -11,8 +11,14 @@ import numpy as np
 
 
 def Image1ChannelStretching(imaIn, newMin, newMax, curMin, curMax):
-    imaOut = newMin + (imaIn-curMin) * ((newMax-newMin)/(curMax-curMin))
-    return imaOut
+    shape = imaIn.shape
+    imaOut = np.copy(imaIn).reshape(-1)
+    for i in range(imaOut.size):
+        imaOut[i] = max(imaOut[i], curMin)
+        imaOut[i] = min(imaOut[i], curMax)
+        imaOut[i] = newMin + (imaOut[i]-curMin) * ((newMax-newMin)/(curMax-curMin))
+    return np.reshape(imaOut, shape)
+
 
 class GrayImg:
     def __init__(self, axes):
