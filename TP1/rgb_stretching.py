@@ -126,6 +126,12 @@ if __name__ == '__main__':
         img2.draw(plt.gca())
         
         if (draw_histo):
-            num_fig = drawHisto(img2, "l'image après étallement", xminxmaxfixed, num_fig)
+            num_fig = drawHisto(img2, "l'image après étalement", xminxmaxfixed, num_fig)
+            
+        if draw_channels:
+            fig = plt.figure(num_fig)
+            num_fig += 1
+            img2.drawEachChannel(fig, "Canaux rouge, vert et bleu de l'image après étalement")
+            
 
     plt.show()
