@@ -52,37 +52,37 @@ if __name__ == '__main__':
     # image originale
     fig = plt.figure(num_fig)
     num_fig += 1
-    img = GrayImg(fig.gca())
+    img = GrayImg()
     img.setTitle("Image originale")
     img.setDataFrom(sys.argv[1])
-    img.reDraw()
+    img.draw(fig.gca())
     
     # histogramme image original
     if (draw_histo):
         fig = plt.figure(num_fig)
         num_fig += 1
-        hist = Histogram(fig.gca(), img.getData())
+        hist = Histogram(img.getData())
         hist.setTitle("Histogramme de l'image originale")
         hist.setXLabel("code de la nuance de gris")
         hist.setYLabel("effectif (en nombre de pixels)")
         if (xminxmaxfixed): hist.SetXRange(0, 255)
-        hist.reDraw()
-        
+        hist.draw(fig.gca())
+    
     # image étallée
     if (strechtImg):
         fig = plt.figure(num_fig)
         num_fig += 1
-        img2 = img.getStretchedImg(fig.gca(), 0, 255, xmin, xmax)
+        img2 = img.getStretchedImg(0, 255, xmin, xmax)
         img2.setTitle("Image aprés étalement")
-        img2.reDraw()
+        img2.draw(fig.gca())
         if (draw_histo):
             fig = plt.figure(num_fig)
             num_fig += 1
-            hist = Histogram(fig.gca(), img2.getData())
+            hist = Histogram(img2.getData())
             hist.setTitle("Histogramme après étalement")
             hist.setXLabel("code de la nuance de gris")
             hist.setYLabel("effectif (en nombre de pixels)")
             if (xminxmaxfixed): hist.SetXRange(0, 255)
-            hist.reDraw()
+            hist.draw(fig.gca())
 
     plt.show()

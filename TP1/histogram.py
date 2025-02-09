@@ -49,14 +49,10 @@ class Histogram:
     _title = "Histogramme"
     _xlabel = "valeurs"
     _ylabel = "effectifs"
-    _histoCenters = None
-    _histoEff = None
-    _ax = None
     _xmin = -1
     _xmax = -1
         
-    def __init__(self, axes, data, strConfig = "BinWidth", configValue = 1):
-        self._ax = axes
+    def __init__(self, data, strConfig = "BinWidth", configValue = 1):
         self._setData(data, strConfig, configValue)
         
     def setTitle(self, t):
@@ -75,13 +71,13 @@ class Histogram:
     def _setData(self, data, strConfig = "BinWidth", configValue = 1):
         [_, self._histoCenters, self._histoEff] = dataHistogram(data, strConfig, configValue)
     
-    def reDraw(self):
-        self._ax.clear()
-        self._ax.grid()
-        self._ax.set_title(self._title)
-        self._ax.set_xlabel(self._xlabel)
-        self._ax.set_ylabel(self._ylabel)
-        self._ax.bar(self._histoCenters, self._histoEff)
+    def draw(self, axes):
+        axes.clear()
+        axes.grid()
+        axes.set_title(self._title)
+        axes.set_xlabel(self._xlabel)
+        axes.set_ylabel(self._ylabel)
+        axes.bar(self._histoCenters, self._histoEff)
         if (self._xmin < self._xmax):
             ymax = np.max(self._histoEff) + 50
-            self._ax.axis([self._xmin, self._xmax, 0, ymax])
+            axes.axis([self._xmin, self._xmax, 0, ymax])
