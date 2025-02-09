@@ -16,7 +16,7 @@ def Image1ChannelStretching(imaIn, newMin, newMax, curMin, curMax):
     for i in range(imaOut.size):
         imaOut[i] = max(imaOut[i], curMin)
         imaOut[i] = min(imaOut[i], curMax)
-        imaOut[i] = newMin + (imaOut[i]-curMin) * ((newMax-newMin)/(curMax-curMin))
+        imaOut[i] = newMin + ((imaOut[i]-curMin)*(newMax-newMin)) / (curMax-curMin)
     return np.reshape(imaOut, shape)
 
 
@@ -121,15 +121,40 @@ class RGBImg:
         return self._img
 
 
+M = np.array([
+    [0.299, 0.587, 0.114],
+    [-0.172, -0.339, 0.511],
+    [0.511, -0.428, -0.083]
+])
+Mt = np.transpose(M)
+invMt = np.transpose(np.linalg.inv(M))
+
+P = [0, 128, 128]
+
 class YCbCrImg:
     def __init__(self):
         self._title = -1
     
     def setDataFromRGBImg(self, rgbimg):
-        self._img = rgbimg
-        
+        rgbimg = rgbimg.getData()
+        self._img = np.zeros(rgbimg.shape, dtype=np.uint8)
+        for i in range(0, rgbimg.shape[0]):
+            for j in range(0, rgbimg.shape[1]):
+                pixel = rgbimg[i,j]
+                ycbcr = pixel.dot(Mt) + P
+                self._img[i,j] = ycbcr
+    
     def getRGBImg(self):
-        return None
+        img = np.zeros(self._img.shape, dtype=np.uint8)
+        for i in range(0, self._img.shape[0]):
+            for j in range(0, self._img.shape[1]):
+                pixel = self._img[i,j]
+                rgb = np.maximum(np.minimum((pixel - P).dot(invMt), 255.), 0.)
+                img[i,j] = rgb
+                
+        rgbimg = RGBImg()
+        rgbimg.setData(img)
+        return rgbimg
     
     def setData(self, img):
         self._img = img
@@ -141,7 +166,7 @@ class YCbCrImg:
         axes.clear()
         if (self._title != -1):
             axes.set_title(self._title)
-        axes.imshow(self._img, vmin=0, vmax=255)
+        axes.imshow(self.getRGBImg().getData(), vmin=0, vmax=255)
         
     def drawEachChannel(self, figure, title = -1):
         ax1, ax2, ax3 = figure.subplots(1, 3, sharey=True)
@@ -153,35 +178,22 @@ class YCbCrImg:
         ax3.set_title('Canal Cr')
         if title != -1:
             figure.suptitle(title)
-    """       
+         
     def getStretchedImg(self, new_min=0, new_max=255, curr_min=-1, curr_max=-1):
-        redchannel = self._img[:,:,0]
+        ychannel = self._img[:,:,0]
         mi = curr_min; ma = curr_max
-        if (mi == -1): mi = np.min(redchannel)
-        if (ma == -1): ma = np.max(redchannel)
-        imgstretchedred = Image1ChannelStretching(redchannel, new_min, new_max, mi, ma)
-        
-        greenchannel = self._img[:,:,1]
-        mi = curr_min; ma = curr_max
-        if (mi == -1): mi = np.min(greenchannel)
-        if (ma == -1): ma = np.max(greenchannel)
-        imgstretchedgreen = Image1ChannelStretching(greenchannel, new_min, new_max, mi, ma)
-        
-        bluechannel = self._img[:,:,2]
-        mi = curr_min; ma = curr_max
-        if (mi == -1): mi = np.min(bluechannel)
-        if (ma == -1): ma = np.max(bluechannel)
-        imgstretchedblue = Image1ChannelStretching(bluechannel, new_min, new_max, mi, ma)
+        if (mi == -1): mi = np.min(ychannel)
+        if (ma == -1): ma = np.max(ychannel)
+        stretchedY = Image1ChannelStretching(ychannel, new_min, new_max, mi, ma) 
         
         imgstretched = np.array(np.zeros(self._img.shape), dtype='uint8')
-        imgstretched[:,:,0] = imgstretchedred
-        imgstretched[:,:,1] = imgstretchedgreen
-        imgstretched[:,:,2] = imgstretchedblue
+        imgstretched[:,:,0] = stretchedY
+        imgstretched[:,:,1] = self._img[:,:,1]
+        imgstretched[:,:,2] = self._img[:,:,2]
         
-        img = RGBImg()
+        img = YCbCrImg()
         img.setData(imgstretched)
         return img
-    """
     
     def getData(self):
         return self._img
