@@ -54,13 +54,13 @@ def drawHisto(img, title, xminxmaxfixed, num_fig):
 if __name__ == '__main__':
     
     if sys.argv.count("-h") != 0 or len(sys.argv) < 2:
-        print("Usage : python3 "+ sys.argv[0] +" fichier.png [-C] [-s] [-H] [-l] [-S cur_min cur_max]")
+        print("Usage : python3 "+ sys.argv[0] +" fichier.png [-C] [-S] [-H] [-l] [-e cur_min cur_max]")
         print("With  :\n" + 
           "        -C : draw each channel separately\n"+
-          "        -s : draw stretched image \n" +
+          "        -S : draw stretched image \n" +
           "        -H : draw histograms\n"+
           "        -l : draw histograms set axis between 0 and 255 \n"+
-          "        -S xmin xmax")
+          "        -e xmin xmax")
         if (len(sys.argv) < 2):
             sys.exit(1)
         else:
@@ -75,7 +75,7 @@ if __name__ == '__main__':
         draw_histo = True
     
     strechtImg = False
-    if (sys.argv.count("-s") > 0):
+    if (sys.argv.count("-S") > 0):
         strechtImg = True
         
     xminxmaxfixed = False
@@ -85,8 +85,8 @@ if __name__ == '__main__':
     xmin = -1
     xmax = -1
     
-    if sys.argv.count("-S"):
-        i = sys.argv.index("-S")
+    if sys.argv.count("-e"):
+        i = sys.argv.index("-e")
         xmin = int(sys.argv[i+1])
         xmax = int(sys.argv[i+2])
     
@@ -121,10 +121,7 @@ if __name__ == '__main__':
         num_fig += 1
         
         img2 = imgycbcr.getStretchedImg(0, 255, xmin, xmax)
-        if xmin != xmax:
-            img2.setTitle("Image après étalement uniforme\nsur tous les canaux")
-        else:
-            img2.setTitle("Image après étalement sur\nchaque canaux indépendamment")
+        img2.setTitle("Image après étalement sur\nle canal Y")
         
         img2.draw(plt.gca())
         
