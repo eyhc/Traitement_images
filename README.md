@@ -16,4 +16,9 @@ python3 hsv_stretching.py data/foret.png -C -H -S -H -s -e 100 250
 python3 hsv_stretching.py data/foret.png -C -H -S -H -v -e 0 130
 ```
 
-Pour le fun faire de même avec l'orque (enlever -H pour ne pas avoir les histogrammes, enlever -C pour ne pas avoir les trois canaux en niveau de gris)
+Pour le fun faire de même avec l'orque (enlever -H pour ne pas avoir les histogrammes, enlever -C pour ne pas avoir les trois canaux en niveau de gris, adapter le -e en fonction de l'histogramme à étaller)
+
+![foret](TP1/resultats/0_comparaison.png)
+
+![orque](TP1/resultats/0_comparaison_orque.png)
+
