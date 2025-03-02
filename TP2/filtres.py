@@ -30,7 +30,7 @@ def noyauGaussien(sigma):
     def f(x,y):
         return np.exp(-(x*x+y*y)/(2*sigma*sigma))
     
-    n = int(np.floor(2*sigma))
+    n = int(np.ceil(2*sigma))
     mi = -n
     ma = n
     X,Y = np.mgrid[mi:ma, mi:ma]
