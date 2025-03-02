@@ -1,6 +1,6 @@
 # Traitement_images
 
-## TP1
+## TP1 - Egalisation d'histogramme
 
 Commandes lancées pour obtenir les images du dossier resultat :
 
@@ -22,7 +22,7 @@ Pour s'amuser, faire de même avec l'orque (enlever -H pour ne pas avoir les his
 
 ![orque](TP1/resultats/0_comparaison_orque.png)
 
-## TP2
+## TP2 - Filtres linéaires
 
 ```
 Usage : python3 main.py image [-f filtre] [-p parametre(s)_filtre] [-l numero_ligne]
