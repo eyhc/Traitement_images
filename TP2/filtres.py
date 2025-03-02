@@ -28,13 +28,14 @@ def noyauBinomial(n):
 def noyauGaussien(sigma):
     sigma = sigma + np.finfo(float).eps
     def f(x,y):
-        return np.exp(-(x*x+y*y)/(2*sigma*sigma)) / (2*np.pi*sigma)
+        return np.exp(-(x*x+y*y)/(2*sigma*sigma))
     
-    n = int(sigma * sigma * 4.)
-    mi = -(n) // 2
-    ma = mi + n + 1
+    n = int(np.floor(2*sigma))
+    mi = -n
+    ma = n
     X,Y = np.mgrid[mi:ma, mi:ma]
-    return f(X,Y)
+    noyau = f(X,Y)
+    return noyau / np.sum(noyau)
 
     
 def noyauMoyenne(n):
