@@ -63,7 +63,8 @@ def noyauLaplace(nom='4-connexe'):
 #######################################################################
 
 def filtreMoyenne(img: np.array, n: np.uint8):
-    # n est la largeur et la hauteur du noyau
+    # n+1 est la largeur et la hauteur du noyau
+    n += 1
     h = noyauMoyenne(n)
     return Conv2D(img, h, 'same')
 
