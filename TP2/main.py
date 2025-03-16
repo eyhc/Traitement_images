@@ -75,7 +75,6 @@ if __name__ == '__main__':
             i = sys.argv.index("-p")
             n = int(sys.argv[i+1])
         
-        
         if filtre == 0:
             nom_filtre += "moyenne"
         else:
@@ -159,10 +158,10 @@ if __name__ == '__main__':
             img2 = filtres.filtreGaussien(img, sigma)
         elif filtre == 3:
             imgX, imgY, imgN = filtres.filtreSobel(img)
-            img2 = img - alpha * (imgX + imgY)
+            img2 = img + alpha * imgN
         elif filtre == 4:
             imgX, imgY, imgN = filtres.filtreRoberts(img)
-            img2 = img - alpha * (imgX + imgY)
+            img2 = img + alpha * imgN
         elif filtre == 5:
             img2 = filtres.filtreLaplacien(img, noyau)
         elif filtre == 6:
@@ -173,8 +172,12 @@ if __name__ == '__main__':
         num_fig += 1
         axes = plt.gca()
         axes.set_title("Image filtrée - " + nom_filtre)
-        axes.imshow(img2, cmap='gray')
-        
+
+        if filtre != 5:
+            axes.imshow(img2, vmin = 0, vmax = 255, cmap='gray')
+        else:
+            axes.imshow(img2, cmap='gray')
+
         # si sobel ou roberts, afficher imgX et imgY
         if filtre == 3 or filtre == 4:
             fig = plt.figure(num_fig)
@@ -201,7 +204,7 @@ if __name__ == '__main__':
             
             plt.plot(t, x, label="signal original")
             plt.plot(t, y, label="signal filtré")
-            plt.title("Signale de la ligne "+str(draw_line_signal)+" de l'image avant et après filtrage")
+            plt.title("Signal de la ligne "+str(draw_line_signal)+" de l'image avant et après filtrage")
             plt.legend(loc="best")
 
 
