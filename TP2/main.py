@@ -23,8 +23,8 @@ if __name__ == '__main__':
           "               o MOYENNE              - paramètres: enier: ordre du noyau\n" +
           "               o GAUSSIEN             - paramètres: float: sigma\n" +
           "               o BINOMIAL             - paramètres: entier: ordre du noyau\n" +
-          "               o SOBEL\n" + 
-          "               o ROBERTS\n" +
+          "               o SOBEL                - paramètres: float: alpha \n" +
+          "               o ROBERTS              - paramètres: float: alpha \n" +
           "               o LAPLACIEN            - paramètres: string: 4-connexe | 8-connexe | robinson | binomial\n" +
           "               o LAPLACIEN_REHAUSSEUR - paramètres: string float: idem_prec alpha \n" +
           "        -l : afficher le signal pour une ligne de l'image\n")
@@ -44,10 +44,8 @@ if __name__ == '__main__':
             filtre = 0
         elif filtre_arg == "BINOMIAL":
             filtre = 1
-            nom_filtre = "binomial"
         elif filtre_arg == "GAUSSIEN":
             filtre = 2
-            nom_filtre = "moyenne"
         elif filtre_arg == "SOBEL":
             filtre = 3
         elif filtre_arg == "ROBERTS":
@@ -91,11 +89,14 @@ if __name__ == '__main__':
         
         nom_filtre += "gaussien, sigma=" + str(sigma)
         
-    elif filtre == 3:
-        nom_filtre += "de Sobel"
-        
-    elif filtre == 4:
-        nom_filtre += "de Roberts"
+    elif filtre == 3 or filtre == 4:
+        if sys.argv.count("-p") != 0:
+            i = sys.argv.index("-p")
+            alpha = float(sys.argv[i+1])
+        if filtre == 3:
+            nom_filtre += "de Sobel"    
+        elif filtre == 4:
+            nom_filtre += "de Roberts"
         
     
     elif filtre == 5 or filtre == 6:
@@ -108,11 +109,16 @@ if __name__ == '__main__':
                 alpha = float(sys.argv[i+2])
         
         nom_filtre += "laplacien"
-        if filtre == 6:
-            nom_filtre += " réhausseur"  
+
+
+    if filtre == 3 or filtre == 4 or filtre == 6:
+        nom_filtre += " réhausseur" 
+
+    if filtre == 5 or filtre == 6:
         nom_filtre += ", noyau=" + noyau
-        if filtre == 6:
-            nom_filtre += ", alpha=" + str(alpha)
+    
+    if filtre == 3 or filtre == 4 or filtre == 6:
+        nom_filtre += ", alpha=" + str(alpha)
 
 
 
@@ -152,9 +158,11 @@ if __name__ == '__main__':
         elif filtre == 2:
             img2 = filtres.filtreGaussien(img, sigma)
         elif filtre == 3:
-            imgX, imgY, img2 = filtres.filtreSobel(img)
+            imgX, imgY, imgN = filtres.filtreSobel(img)
+            img2 = img - alpha * (imgX + imgY)
         elif filtre == 4:
-            imgX, imgY, img2 = filtres.filtreRoberts(img)
+            imgX, imgY, imgN = filtres.filtreRoberts(img)
+            img2 = img - alpha * (imgX + imgY)
         elif filtre == 5:
             img2 = filtres.filtreLaplacien(img, noyau)
         elif filtre == 6:
@@ -165,18 +173,20 @@ if __name__ == '__main__':
         num_fig += 1
         axes = plt.gca()
         axes.set_title("Image filtrée - " + nom_filtre)
-        axes.imshow(img2, vmin=0, vmax=255, cmap='gray')
+        axes.imshow(img2, cmap='gray')
         
         # si sobel ou roberts, afficher imgX et imgY
         if filtre == 3 or filtre == 4:
             fig = plt.figure(num_fig)
             num_fig += 1
             
-            ax1, ax2 = fig.subplots(1, 2, sharey=True)
+            ax1, ax2, ax3 = fig.subplots(1, 3, sharey=True)
             ax1.imshow(imgX, cmap='gray')
             ax1.set_title('Filtrage en X')
             ax2.imshow(imgY, cmap='gray')
             ax2.set_title('Filtrage en Y')
+            ax3.imshow(imgN, cmap='gray')
+            ax3.set_title('Norme 2 du filtrage en X et Y')
             fig.suptitle("Etapes de filtrage de l'image originale")
         
         
@@ -191,7 +201,7 @@ if __name__ == '__main__':
             
             plt.plot(t, x, label="signal original")
             plt.plot(t, y, label="signal filtré")
-            plt.title("Signale de la ligne "+str(draw_line_signal)+"de l'image avant et après filtrage")
+            plt.title("Signale de la ligne "+str(draw_line_signal)+" de l'image avant et après filtrage")
             plt.legend(loc="best")
 
 
