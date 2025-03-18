@@ -173,10 +173,8 @@ if __name__ == '__main__':
         axes = plt.gca()
         axes.set_title("Image filtrée - " + nom_filtre)
 
-        if filtre != 5:
-            axes.imshow(img2, vmin = 0, vmax = 255, cmap='gray')
-        else:
-            axes.imshow(img2, cmap='gray')
+        axes.imshow(img2, vmin = 0, vmax = 255, cmap='gray')
+        #plt.imsave("img_filtree.png", img2, vmin = 0, vmax = 255, cmap='gray')
 
         # si sobel ou roberts, afficher imgX et imgY
         if filtre == 3 or filtre == 4:
