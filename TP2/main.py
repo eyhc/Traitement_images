@@ -158,10 +158,10 @@ if __name__ == '__main__':
             img2 = filtres.filtreGaussien(img, sigma)
         elif filtre == 3:
             imgX, imgY, imgN = filtres.filtreSobel(img)
-            img2 = img + alpha * imgN
+            img2 = img + alpha * (imgX + imgY)
         elif filtre == 4:
             imgX, imgY, imgN = filtres.filtreRoberts(img)
-            img2 = img + alpha * imgN
+            img2 = img + alpha * (imgX + imgY)
         elif filtre == 5:
             img2 = filtres.filtreLaplacien(img, noyau)
         elif filtre == 6:
